@@ -5,7 +5,7 @@
 function mjAlgorithm.analyseHu(zu, laiziCount, result)
 
     mjAlgorithm.check_hu_loop_id = mjAlgorithm.check_hu_loop_id + 1
-    print ('loop'.. mjAlgorithm.check_hu_loop_id)
+--    print ('loop'.. mjAlgorithm.check_hu_loop_id)
 
     if #zu == 0 then
         -- 胡

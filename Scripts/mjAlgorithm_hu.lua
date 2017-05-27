@@ -137,11 +137,11 @@ function mjAlgorithm.hu(myCard, otherCard, lastCard, laizi, configJson)
 
     -- 第三部分: 组里一张也不除去, 挑两个混子做对子
     lzCount = laiziCount
-    if lzCount > 1 then
-        zu1 = table.cloneq(zu)
-        lzCount = laiziCount
-        mjAlgorithm.analyseHu(zu1, lzCount - 1, result)
-    end
+--    if lzCount > 1 then
+--        zu1 = table.cloneq(zu)
+--        lzCount = laiziCount
+--        mjAlgorithm.analyseHu(zu1, lzCount - 1, result)
+--    end
 
     for k, v in pairs(zu) do
         -- 第一部分: 除去两张已有的牌做对子

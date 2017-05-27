@@ -55,6 +55,10 @@ function logzut(zu)
     end
 end
 
+function logzu(zu)
+    
+end
+
 function logcur(cards, result)
     local str2 = '{';
     for i = 1, #result do
