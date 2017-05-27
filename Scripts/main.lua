@@ -22,7 +22,7 @@ require 'mjAlgorithm'
 
 -- mjAlgorithm.analyseHu(zu,laiziCount,result)
 
- local myCard = { 5, 3, 4, 4, 7, 7, 7, 9, 9, 9, 3, 3, 3 }
+ local myCard = { 1, 3, 3, 3, 4, 4, 5, 7, 7, 7, 9, 9, 9 }
 -- local myCard = { 1, 5, 1, 4, 7, 7, 7, 9, 9, 9, 3, 3, 3 }
 
 -- local myCard = { 1, 3, 3, 3, 5, 5, 4, 7, 7, 7, 9, 9, 9 }

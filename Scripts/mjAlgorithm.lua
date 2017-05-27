@@ -55,8 +55,39 @@ function logzut(zu)
     end
 end
 
-function logzu(zu)
-    
+function logzu(zu, tag, from_loop, lz_count, out_value, ting)
+    lz_count = lz_count or ''
+    out_value = out_value or ''
+    local str = ''
+    if #zu == 0 then str = 'empty' end
+    for i = 1, #zu do
+        local str_z = '{'
+        local value = zu[i].value
+        for k, v in pairs(zu[i]) do
+            if k ~= 'value' then
+                if k ~= 1 then str_z = str_z .. ',' end
+                str_z = str_z .. value
+            end
+        end
+        str_z = str_z .. '}'
+        str= str .. str_z
+    end
+
+    local ting_str = '';
+    if ting ~= nil then
+        for k,v in pairs(ting) do
+            if v == 1 then ting_str = ting_str .. k .. ' '
+--            else ting_str = ting_str .. '*' .. k .. ' '
+            end
+        end
+    end
+
+    print (tag .. string.toright(str, 36) .. 
+    '     -(' .. from_loop .. ')' .. 
+    ' -lz' .. lz_count .. 
+    ' -o' .. out_value ..
+    ' -t(' .. ting_str .. ')'
+    )
 end
 
 function logcur(cards, result)
@@ -74,7 +105,7 @@ function logcur(cards, result)
     end
     str2 = str2 .. '}'
 
-    for k,v in pairs(result.lz) do
+    for k, v in pairs(result.lz) do
         if k == 'win' then
             str2 = str2 .. ' w' .. v
         else
@@ -91,7 +122,7 @@ function log_result2(result2)
     mjAlgorithm.check_hu_loop_id = 0
     for i = 1, #result2 do
         mjAlgorithm.check_hu_loop_id = mjAlgorithm.check_hu_loop_id + 1
-        logcur({ }, result2[i])
+        logcur( { }, result2[i])
     end
     print '---------------- end ----------------'
 end

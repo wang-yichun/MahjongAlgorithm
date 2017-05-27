@@ -144,11 +144,13 @@ function mjAlgorithm.hu(myCard, otherCard, lastCard, laizi, configJson)
 --    end
 
     for k, v in pairs(zu) do
+        print ( '  ' .. v.value .. ' ---- ')
         -- 第一部分: 除去两张已有的牌做对子
         zu1 = table.cloneq(zu)
         lzCount = laiziCount
         count = table.getn(zu1[k])
         if count > 1 then
+            logzu(zu1, '       --', '')
             removeCard(zu1, k)
             removeCard(zu1, k)
             mjAlgorithm.analyseHu(zu1, lzCount, result)
@@ -157,6 +159,7 @@ function mjAlgorithm.hu(myCard, otherCard, lastCard, laizi, configJson)
         -- 第二部分: 除去一张已有的牌,配上一个混子做对子
         if lzCount > 0 then
             zu1 = table.cloneq(zu)
+            logzu(zu1, '        -', '')
             lzCount = laiziCount
             temp = zu1[k].value
             removeCard(zu1, k)
