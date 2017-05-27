@@ -55,9 +55,11 @@ function logzut(zu)
     end
 end
 
-function logzu(zu, tag, from_loop, lz_count, out_value, ting)
+function logzu(zu, tag, from_loop, lz_count, out_value, ting, res_g)
     lz_count = lz_count or ''
     out_value = out_value or ''
+    res_g = res_g or {}
+
     local str = ''
     if #zu == 0 then str = 'empty' end
     for i = 1, #zu do
@@ -82,11 +84,25 @@ function logzu(zu, tag, from_loop, lz_count, out_value, ting)
         end
     end
 
+    local res_g_str = '{'
+    for i = 1, #res_g do
+        local g_str = '{'
+        for j = 1, #res_g[i] do
+            if j ~= 1 then g_str = g_str .. ',' end
+            g_str = g_str .. res_g[i][j]
+        end
+        g_str = g_str .. '}'
+        res_g_str = res_g_str .. g_str
+    end
+    res_g_str = res_g_str .. '}'
+
+
     print (tag .. string.toright(str, 36) .. 
     '     -(' .. from_loop .. ')' .. 
     ' -lz' .. lz_count .. 
     ' -o' .. out_value ..
-    ' -t(' .. ting_str .. ')'
+    ' -t(' .. ting_str .. ')' ..
+    ' -g(' .. res_g_str .. ')'
     )
 end
 

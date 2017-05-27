@@ -3,19 +3,19 @@
 -- 此文件由[BabeLua]插件自动生成
 
 function mjAlgorithm.isZi(value)
-    if 0x01 >= value and value <= 0x09 then return true end
-    if 0x11 >= value and value <= 0x19 then return true end
-    if 0x21 >= value and value <= 0x29 then return true end
+    if (0x01 <= value and value <= 0x09) then return true end
+    if (0x11 <= value and value <= 0x19) then return true end
+    if (0x21 <= value and value <= 0x29) then return true end
     return false
 end
 
-function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
+function mjAlgorithm.analyseHu(zu, laiziCount, result, res_group, from_loop)
 
     if from_loop == nil then from_loop = '' end
 
     mjAlgorithm.check_hu_loop_id = mjAlgorithm.check_hu_loop_id + 1
 
-    if mjAlgorithm.check_hu_loop_id == 56 then
+    if mjAlgorithm.check_hu_loop_id == 30 then
         print ' <<<<< '
     end
 
@@ -24,7 +24,7 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
     local out_value = result.out and #result.out > 0 and result.out[1] or ''
 
 
-    logzu(zu, '    (' .. string.tocenter(loop_id, 3) .. ')', from_loop, laiziCount, out_value, result.ting)
+    logzu(zu, '    (' .. string.tocenter(loop_id, 3) .. ')', from_loop, laiziCount, out_value, result.ting, res_group)
 
 
     if #zu == 0 then
@@ -44,10 +44,20 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
             end
             if laiziCount > 2 then
                 result.hu_all = true
+                print('     hu_all!!')
             end
             return true
         end
         if laiziCount > 0 then
+            
+            if res_group[1][2] == 0 then
+                local v = res_group[1][1]
+                result.data = result.data or { }
+                result.data[v] = result.data[v] or { }
+                result.data[v].hu_all = true
+                print('     hu_all:' .. v)
+            end
+            
             -- 全部
             result.hu_all = true
             print('     hu_all!!')
@@ -73,7 +83,6 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
                 result.hu_all = true
                 print('     hu_all!!')
             end
-            -- print_lua_table(result.data)
             return true
         end
     end
@@ -92,7 +101,10 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
             removeCard(cache, 3)
             removeCard(cache, 2)
             removeCard(cache, 1)
-            mjAlgorithm.analyseHu(cache, laiziCount, result, loop_id)
+            res_g = table.cloneq(res_group)
+            local g = {v, v+1, v+2}
+            table.insert(res_g, g)
+            mjAlgorithm.analyseHu(cache, laiziCount, result, res_g, loop_id)
         end
     end
 
@@ -105,17 +117,23 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
             if (v ==(v1 - 1)) then
                 removeCard(cache, 2)
                 removeCard(cache, 1)
+                res_g = table.cloneq(res_group)
+                local g = {v, v+1, 0}
+                table.insert(res_g, g)
                 if mjAlgorithm.isZi(v - 1) then result.ting[v - 1] =(result.ting[v - 1] or 0) + 1 end
                 if mjAlgorithm.isZi(v + 2) then result.ting[v + 2] =(result.ting[v + 2] or 0) + 1 end
-                mjAlgorithm.analyseHu(cache, laiziCount - 1, result, loop_id)
+                mjAlgorithm.analyseHu(cache, laiziCount - 1, result, res_g, loop_id)
                 if mjAlgorithm.isZi(v - 1) then result.ting[v - 1] = result.ting[v - 1] -1 end
                 if mjAlgorithm.isZi(v + 2) then result.ting[v + 2] = result.ting[v + 2] -1 end
             end
             if (v ==(v1 - 2)) then
                 removeCard(cache, 2)
                 removeCard(cache, 1)
+                res_g = table.cloneq(res_group)
+                local g = {v, 0, v+2}
+                table.insert(res_g, g)
                 if mjAlgorithm.isZi(v + 1) then result.ting[v + 1] =(result.ting[v + 1] or 0) + 1 end
-                mjAlgorithm.analyseHu(cache, laiziCount - 1, result, loop_id)
+                mjAlgorithm.analyseHu(cache, laiziCount - 1, result, res_g, loop_id)
                 if mjAlgorithm.isZi(v + 1) then result.ting[v + 1] = result.ting[v + 1] -1 end
             end
 
@@ -124,8 +142,11 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
             if (v ==(v1 - 2)) then
                 removeCard(cache, 3)
                 removeCard(cache, 1)
+                res_g = table.cloneq(res_group)
+                local g = {v, 0, v+2}
+                table.insert(res_g, g)
                 if mjAlgorithm.isZi(v + 1) then result.ting[v + 1] =(result.ting[v + 1] or 0) + 1 end
-                mjAlgorithm.analyseHu(cache, laiziCount - 1, result, loop_id)
+                mjAlgorithm.analyseHu(cache, laiziCount - 1, result, res_g, loop_id)
                 if mjAlgorithm.isZi(v + 1) then result.ting[v + 1] = result.ting[v + 1] -1 end
             end
         end
@@ -138,12 +159,16 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
             cache = table.cloneq(zu)
             removeCard(cache, 1)
 
+            res_g = table.cloneq(res_group)
+            local g = {v, 0, 0}
+            table.insert(res_g, g)
+
             if mjAlgorithm.isZi(v - 2) then result.ting[v - 2] =(result.ting[v - 2] or 0) + 1 end
             if mjAlgorithm.isZi(v - 1) then result.ting[v - 1] =(result.ting[v - 1] or 0) + 1 end
             if mjAlgorithm.isZi(v) then result.ting[v] =(result.ting[v] or 0) + 1 end
             if mjAlgorithm.isZi(v + 1) then result.ting[v + 1] =(result.ting[v + 1] or 0) + 1 end
             if mjAlgorithm.isZi(v + 2) then result.ting[v + 2] =(result.ting[v + 2] or 0) + 1 end
-            mjAlgorithm.analyseHu(cache, laiziCount - 2, result, loop_id)
+            mjAlgorithm.analyseHu(cache, laiziCount - 2, result, res_g, loop_id)
             if mjAlgorithm.isZi(v - 2) then result.ting[v - 2] = result.ting[v - 2] -1 end
             if mjAlgorithm.isZi(v - 1) then result.ting[v - 1] = result.ting[v - 1] -1 end
             if mjAlgorithm.isZi(v) then result.ting[v] = result.ting[v] -1 end
@@ -155,11 +180,15 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
     -- 牌牌牌
     count = #zu[1]
     if count >= 3 then
+        local v = zu[1].value
         cache = table.cloneq(zu)
         for i = 1, 3 do
             removeCard(cache, 1)
         end
-        mjAlgorithm.analyseHu(cache, laiziCount, result, loop_id)
+        res_g = table.cloneq(res_group)
+        local g = {v, v, v}
+        table.insert(res_g, g)
+        mjAlgorithm.analyseHu(cache, laiziCount, result, res_g, loop_id)
     end
 
     -- 牌牌癞子(刻)
@@ -171,8 +200,13 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
             for i = 1, 2 do
                 removeCard(cache, 1)
             end
+            
+            res_g = table.cloneq(res_group)
+            local g = {v, v, 0}
+            table.insert(res_g, g)
+            
             result.ting[v] =(result.ting[v] or 0) + 1
-            mjAlgorithm.analyseHu(cache, laiziCount - 1, result, loop_id)
+            mjAlgorithm.analyseHu(cache, laiziCount  - 1, result, res_g, loop_id)
             result.ting[v] = result.ting[v] -1
         end
     end
@@ -184,18 +218,22 @@ function mjAlgorithm.analyseHu(zu, laiziCount, result, from_loop)
             cache = table.cloneq(zu)
             local v = cache[1].value
             removeCard(cache, 1)
+
+            res_g = table.cloneq(res_group)
+            local g = {v, 0, 0}
+            table.insert(res_g, g)
+
             result.ting[v] =(result.ting[v] or 0) + 1
-            mjAlgorithm.analyseHu(cache, laiziCount - 2, result, loop_id)
+            mjAlgorithm.analyseHu(cache, laiziCount - 2, result, res_g, loop_id)
             result.ting[v] = result.ting[v] -1
         end
     end
-
 
     if #result.out == 0 then
         cache = table.cloneq(zu)
         table.insert(result.out, cache[1].value)
         removeCard(cache, 1)
-        mjAlgorithm.analyseHu(cache, laiziCount, result, loop_id)
+        mjAlgorithm.analyseHu(cache, laiziCount, result, res_group, loop_id)
         result.out = { }
     end
 
