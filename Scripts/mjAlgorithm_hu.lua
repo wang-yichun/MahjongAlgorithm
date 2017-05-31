@@ -19,18 +19,9 @@ function mjAlgorithm.hu(myCard, otherCard, lastCard, laizi, configJson)
     local temp
     laizi = laizi or { }
 
-    local ignore_last_card = false;
-
-    -- 胡牌不能是龙
-    if table.indexof(laizi, lastCard) ~= false then
-        ignore_last_card = true;
-    end
-
     local cc = { }
     table.insertto(cc, myCard)
-    if ignore_last_card == false then
-        table.insert(cc, lastCard)
-    end
+    table.insert(cc, lastCard)
     table.sort(cc, comp)
 
     for k, v in pairs(cc) do
@@ -123,26 +114,16 @@ function mjAlgorithm.hu(myCard, otherCard, lastCard, laizi, configJson)
         end
     end
 
-    --    table.insertto(cards, laiziCard)
-    --    zu = mjAlgorithm.analysis(cards)
-
-    --        temp = { }
-    --        temp[1] = #cards + 1
-    --        temp.value = 999
-    --        table.insert(zu, temp)
-
     laiziCount = #laiziCard + 1
     local count
     local cardValue
     local tingJiang = { }
 
-    -- 第三部分: 组里一张也不除去, 挑两个混子做对子
-    -- lzCount = laiziCount
-    --    if lzCount > 1 then
-    --        zu1 = table.cloneq(zu)
-    --        lzCount = laiziCount
-    --        mjAlgorithm.analyseHu(zu1, lzCount - 1, result)
-    --    end
+    if configJson.MagicNeedBaotou == 1 then
+        if laiziCount > 0 then
+            result['need_baotou'] = true
+        end
+    end
 
     for k, v in pairs(zu) do
         print('  ' .. v.value .. ' ---- ')
@@ -186,29 +167,24 @@ function mjAlgorithm.hu(myCard, otherCard, lastCard, laizi, configJson)
 
             if need_baotou == false then result.ting[temp] =(result.ting[temp] or 0) + 1 end
             mjAlgorithm.analyseHu(zu1, lzCount - 1, result, res_g)
-            if need_baotou == false then result.ting[temp] = result.ting[temp] - 1 end
+            if need_baotou == false then result.ting[temp] = result.ting[temp] -1 end
         end
 
 
     end
 
-    --    zu1 = table.cloneq(zu)
-    --    local lazCount = laiziCount - 1
-    --    temp = { }
-    --    temp[1] = #cards + 1
-    --    temp.value = 100
-    --    table.insert(zu1, temp)
-    --    result.data = { }
-    --    mjAlgorithm.analyseHu(zu1, lazCount, result)
+    -- 第三部分: 两个混子做对子
+    lzCount = laiziCount
+    if lzCount > 0 then
+        zu1 = table.cloneq(zu)
+        logzu(zu1, '        *', '')
 
-    --    if lazCount > 0 then
-    --        zu1 = table.cloneq(zu)
-    --        lazCount = laiziCount - 1
-    --        result.ting[temp] =(result.ting[temp] or 0) + 1
-    --        mjAlgorithm.analyseHu(zu1, lazCount - 1, result)
-    --        result.ting[temp] = result.ting[temp] -1
-    --    end
+        res_g = table.cloneq(res_group)
+        local g = { 0, 0 }
+        table.insert(res_g, g)
 
+        mjAlgorithm.analyseHu(zu1, lzCount - 2, result, res_g)
+    end
 
     result.ting = nil
 
